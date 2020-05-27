@@ -1,6 +1,6 @@
 #include "parse.h"
 
-static char **parse(char* line, char* limit)
+char **parse(char* line, char* limit)
 {
     size_t index = 0;
     char *tok = NULL;
@@ -21,16 +21,4 @@ static char **parse(char* line, char* limit)
     cmd[index] = NULL;
 
     return cmd;
-}
-
-static void free_array(char** array)
-{
-    for (size_t i = 0; array[i]; i++)
-    {
-        free(array[i]);
-        array[i] = NULL;
-    }
-
-    free(array);
-    array = NULL;
 }
