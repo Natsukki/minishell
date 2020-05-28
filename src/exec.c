@@ -43,7 +43,7 @@ void exec_builtin(char** cmd)
     if (!strcmp(cmd[0], "echo"))
         my_echo(cmd);
     if (!strcmp(cmd[0], "exit"))
-        my_exit();
+        my_exit(cmd);
     else
         return;
 }
@@ -64,7 +64,7 @@ void abs_path(char** cmd)
 
             for (size_t i = 0; parsed_path[i]; i++)
             {
-                bin = (char *)calloc(sizeof(char), strlen(parsed_path[i]) + 1 + strlen(cmd[0]) + 1);
+                bin = calloc(sizeof(char), strlen(parsed_path[i]) + 1 + strlen(cmd[0]) + 1);
                 if (bin == NULL)
                     break;
 

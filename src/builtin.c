@@ -53,7 +53,12 @@ void my_echo(char** cmd)
         printf("\n");
 }
 
-void my_exit()
+void my_exit(char** cmd)
 {
-    exit(0);
+    int ret = 0;
+    if (len_array(cmd) > 1)
+        ret = atoi(cmd[1]);
+    free_array(cmd);
+    cmd = NULL;
+    exit(ret);
 }
