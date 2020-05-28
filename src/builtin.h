@@ -6,5 +6,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "utils.h"
+
 bool is_builtin(char* cmd);
 void my_cd(char* path);
+void my_echo(char** cmd);
+void my_exit();
