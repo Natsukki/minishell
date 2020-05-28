@@ -35,24 +35,31 @@ void shell_loop(FILE *file)
                 printf("minishell$ ");
             continue;
         }
-        char** cmd = parse(input, " \n\t");
-        if(is_builtin(cmd[0]) == false)
+        char** parsed = parse(input, ";");
+        for (size_t i = 0; parsed[i]; i++)
         {
-            char* tmp = strdup(cmd[0]);
-            abs_path(cmd);
-            if (cmd[0] == NULL)
+            if (!strcmp(parsed[i], "\n"))
+                break;
+            char** cmd = parse(parsed[i], " \n\t");
+            if(is_builtin(cmd[0]) == false)
             {
-                printf("minishell: %s: command not found\n", tmp);
-                free(tmp);
-                tmp = NULL;
+                char* tmp = strdup(cmd[0]);
+                abs_path(cmd);
+                if (cmd[0] == NULL)
+                {
+                    printf("minishell: %s: command not found\n", tmp);
+                    free(tmp);
+                    tmp = NULL;
+                }
+                exec(cmd);
             }
-            exec(cmd);
+            else
+                exec_builtin(cmd);
+            free_array(cmd);
         }
-        else
-            exec_builtin(cmd);
-        if (isatty (fileno(file)))
-            printf("minishell$ ");
-        free_array(cmd);
+        free_array(parsed);
+            if (isatty (fileno(file)))
+                printf("minishell$ ");
     }
 
     free(input);
