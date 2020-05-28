@@ -3,7 +3,7 @@
 
 bool is_builtin(char* cmd)
 {
-    const char* builtins[] = { "cd", "echo", "exit", NULL };
+    const char* builtins[] = { "cd", "echo", "exit", "kill", NULL };
     for (size_t i = 0; builtins[i]; i++)
         if (!strcmp(cmd, builtins[i]))
             return true;
@@ -61,4 +61,15 @@ void my_exit(char** cmd)
     free_array(cmd);
     cmd = NULL;
     exit(ret);
+}
+
+void my_kill(char** cmd)
+{
+    int signal = -atoi(cmd[1]);
+    for (size_t i = 3; cmd[i]; i++)
+    {
+        int pid = atoi(cmd[i]);
+        if (kill(pid, signal) != 0)
+            printf("no such process");
+    }
 }

@@ -44,6 +44,8 @@ void exec_builtin(char** cmd)
         my_echo(cmd);
     if (!strcmp(cmd[0], "exit"))
         my_exit(cmd);
+    if (!strcmp(cmd[0], "kill"))
+        my_kill(cmd);
     else
         return;
 }
