@@ -10,8 +10,18 @@ bool is_builtin(char* cmd)
     return false;
 }
 
+void cd_home()
+{
+    const char* const home = getenv("HOME");
+    if (home)
+        if (chdir(home) == -1)
+            perror("chdir()");
+}
+
 void my_cd(char* path)
 {
-    if (chdir(path) == -1)
+    if (strcmp(path, "~") == 0)
+        cd_home();
+    else if (chdir(path) == -1)
         perror("chdir()");
 }
