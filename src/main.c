@@ -8,7 +8,7 @@
 void sigintHandler (int sig_num)
 {
     sig_num = sig_num;
-    write(1, "\nminishell$ ", 12);
+    printf("\nminishell$ ");
     signal(SIGINT, sigintHandler);
 }
 
@@ -24,7 +24,7 @@ void shell_loop(FILE *file)
     }
     //write prompt
     if (isatty (fileno(file)))
-        write(1, "minishell$ ", 11);
+        printf("minishell$ ");
     signal(SIGINT, sigintHandler);
     while (getline(&input, &input_size, file) > 0)
     {
@@ -35,7 +35,7 @@ void shell_loop(FILE *file)
         if (input[0] == '\n')
         {
             if (isatty (fileno(file)))
-                write(1, "minishell$ ", 11);
+                printf("minishell$ ");
             continue;
         }
         char** cmd = parse(input, " \n\t");
@@ -49,7 +49,7 @@ void shell_loop(FILE *file)
         else
             exec_builtin(cmd);
         if (isatty (fileno(file)))
-            write(1, "minishell$ ", 11);
+            printf("minishell$ ");
         free_array(cmd);
     }
 
