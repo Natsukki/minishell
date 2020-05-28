@@ -16,9 +16,19 @@ void exec(char** cmd)
     }
     else
     {
-        if (!strcmp(cmd[0], "echo"))
+        // strip quotes from the string to echo
+        if (strcmp(cmd[0], "/usr/bin/echo") == 0
+            || strcmp(cmd[0], "/bin/echo") == 0)
         {
-
+            size_t len = strlen(cmd[1]);
+            if (cmd[1][0] == '"' && cmd[1][len - 1] == '"')
+            {
+                if (len > 2)
+                {
+                    memmove(cmd[1], cmd[1] + 1, len - 2);
+                    cmd[1][len - 2] = 0;
+                }
+            }
         }
         if (execve(cmd[0], cmd, NULL) == -1)
             perror("Command not found");
@@ -30,6 +40,10 @@ void exec_builtin(char** cmd)
 {
     if (!strcmp(cmd[0], "cd"))
         my_cd(cmd[1]);
+    if (!strcmp(cmd[0], "echo"))
+        my_echo(cmd);
+    if (!strcmp(cmd[0], "exit"))
+        my_exit();
     else
         return;
 }
