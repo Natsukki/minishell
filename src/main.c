@@ -16,7 +16,7 @@ void sigintHandler (int sig_num)
 void shell_loop(FILE *file)
 {
     size_t input_size = 2048;
-    char* input = (char *)calloc(sizeof(char), input_size);
+    char* input = calloc(sizeof(char), input_size);
     if (!input)
     {
         free(input);
@@ -28,22 +28,24 @@ void shell_loop(FILE *file)
     signal(SIGINT, sigintHandler);
     while (getline(&input, &input_size, file) > 0)
     {
-        if (input[0] == '\0')
-            continue;
-
         // handling empty input
-        if (input[0] == '\n')
+        if (input[0] == '\n' || input[0] == '\0')
         {
             if (isatty (fileno(file)))
                 printf("minishell$ ");
             continue;
         }
         char** cmd = parse(input, " \n\t");
-        if (cmd[0] == NULL)
-            printf("Command not found\n");
-        else if(is_builtin(cmd[0]) == false)
+        if(is_builtin(cmd[0]) == false)
         {
+            char* tmp = strdup(cmd[0]);
             abs_path(cmd);
+            if (cmd[0] == NULL)
+            {
+                printf("minishell: %s: command not found\n", tmp);
+                free(tmp);
+                tmp = NULL;
+            }
             exec(cmd);
         }
         else

@@ -10,14 +10,14 @@ char **parse(char* line, char* limit)
 
     while (tok)
     {
-        cmd = (char **)realloc(cmd, (index + 1) * sizeof(char *));
+        cmd = realloc(cmd, (index + 1) * sizeof(char *));
         cmd[index] = strdup(tok);
         tok = strtok(NULL, limit);
         index++;
     }
 
     // NULL at end of array to avoid undefined behaviour
-    cmd = (char **)realloc(cmd, (index + 1) * sizeof(char *));
+    cmd = realloc(cmd, (index + 1) * sizeof(char *));
     cmd[index] = NULL;
 
     return cmd;

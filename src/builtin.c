@@ -3,7 +3,7 @@
 
 bool is_builtin(char* cmd)
 {
-    const char* builtins[] = { "cd", "echo", "exit", NULL};
+    const char* builtins[] = { "cd", "echo", "exit", NULL };
     for (size_t i = 0; builtins[i]; i++)
         if (!strcmp(cmd, builtins[i]))
             return true;

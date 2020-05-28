@@ -54,9 +54,7 @@ void abs_path(char** cmd)
     char* path = strdup(getenv("PATH"));
     char* bin = NULL;
 
-    if(cmd[0] != NULL)
-    {
-        if (cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0)
+        if (cmd[0] != NULL && cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0)
         {
             parsed_path = parse(path, ":");
             free(path);
@@ -88,5 +86,4 @@ void abs_path(char** cmd)
             free(path);
             path = NULL;
         }
-    }
 }
