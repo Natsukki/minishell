@@ -11,4 +11,5 @@
 
 int exec(char** cmd);
 int exec_builtin(char** cmd);
+int exec_sequence(char* input, int seq);
 void abs_path(char** cmd);

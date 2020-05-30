@@ -21,3 +21,15 @@ size_t len_array(char** array)
         c++;
     return c;
 }
+
+int is_sequence(char* input)
+{
+    char** and = parse(input, "&&");
+    char** or = parse(input, "||");
+    int ret = 0;
+    if (len_array(and) > 1)
+        ret = 1;
+    else if (len_array(or) > 1)
+        ret = 2;
+    return ret;
+}

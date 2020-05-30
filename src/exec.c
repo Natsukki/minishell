@@ -94,3 +94,14 @@ void abs_path(char** cmd)
             path = NULL;
         }
 }
+
+int exec_sequence(char* input, int seq)
+{
+    int exit = 0;
+    char** cmd;
+    if (seq == 1)
+        cmd = parse(input, "&&");
+    if (seq == 2)
+        cmd = parse(input, "||");
+    return exit;
+}

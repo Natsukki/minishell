@@ -39,6 +39,9 @@ int shell_loop(FILE *file)
         char** parsed = parse(input, ";");
         for (size_t i = 0; parsed[i]; i++)
         {
+            int seq = is_sequence(input);
+            if (seq)
+                exit = exec_sequence(input, seq);
             if (!strcmp(parsed[i], "\n"))
                 break;
             char** cmd = parse(parsed[i], " \n\t");
