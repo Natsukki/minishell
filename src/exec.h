@@ -9,6 +9,6 @@
 #include "utils.h"
 #include "builtin.h"
 
-void exec(char** cmd);
-void exec_builtin(char** cmd);
+int exec(char** cmd);
+int exec_builtin(char** cmd);
 void abs_path(char** cmd);

@@ -1,7 +1,8 @@
 #include "exec.h"
 
-void exec(char** cmd)
+int exec(char** cmd)
 {
+    int exit = 0;
     int st = 0;
     pid_t pid = 0;
 
@@ -31,23 +32,27 @@ void exec(char** cmd)
             }
         }
         if (execve(cmd[0], cmd, NULL) == -1)
+        {
             perror("Command not found");
-        exit(EXIT_FAILURE);
+            exit = 127;
+        }
+//        exit(EXIT_FAILURE);
     }
+    return exit;
 }
 
-void exec_builtin(char** cmd)
+int exec_builtin(char** cmd)
 {
+    int exit = 0;
     if (!strcmp(cmd[0], "cd"))
-        my_cd(cmd[1]);
+        exit = my_cd(cmd[1]);
     if (!strcmp(cmd[0], "echo"))
-        my_echo(cmd);
+        exit = my_echo(cmd);
     if (!strcmp(cmd[0], "exit"))
-        my_exit(cmd);
+        exit = my_exit(cmd);
     if (!strcmp(cmd[0], "kill"))
-        my_kill(cmd);
-    else
-        return;
+        exit = my_kill(cmd);
+    return exit;
 }
 
 void abs_path(char** cmd)

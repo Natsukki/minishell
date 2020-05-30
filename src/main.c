@@ -13,8 +13,9 @@ void sigintHandler (int sig_num)
 }
 
 
-void shell_loop(FILE *file)
+int shell_loop(FILE *file)
 {
+    int exit = 0;
     size_t input_size = 2048;
     char* input = calloc(sizeof(char), input_size);
     if (!input)
@@ -48,13 +49,17 @@ void shell_loop(FILE *file)
                 if (cmd[0] == NULL)
                 {
                     printf("minishell: %s: command not found\n", tmp);
-                    free(tmp);
-                    tmp = NULL;
+                    exit = 127;
                 }
-                exec(cmd);
+                else
+                {
+                    exit = exec(cmd);
+                }
+                free(tmp);
+                tmp = NULL;
             }
             else
-                exec_builtin(cmd);
+                exit = exec_builtin(cmd);
             free_array(cmd);
         }
         free_array(parsed);
@@ -63,11 +68,13 @@ void shell_loop(FILE *file)
     }
 
     free(input);
+    return exit;
 }
 
 
 int main(int argc, char** argv)
 {
+    int exit = 1;
     if (argc != 1)
     {
         FILE *file = fopen(argv[1], "r");
@@ -78,10 +85,12 @@ int main(int argc, char** argv)
         }
         else
         {
-            shell_loop(file);
+            exit = shell_loop(file);
             fclose(file);
         }
     }
     else
-        shell_loop(stdin);
+        exit = shell_loop(stdin);
+    printf("exited with :%d\n", exit);
+    return exit;
 }

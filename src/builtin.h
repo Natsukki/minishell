@@ -9,7 +9,7 @@
 #include "utils.h"
 
 bool is_builtin(char* cmd);
-void my_cd(char* path);
-void my_echo(char** cmd);
-void my_exit(char** cmd);
-void my_kill(char** cmd);
+int my_cd(char* path);
+int my_echo(char** cmd);
+int my_exit(char** cmd);
+int my_kill(char** cmd);

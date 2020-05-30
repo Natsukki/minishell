@@ -10,24 +10,36 @@ bool is_builtin(char* cmd)
     return false;
 }
 
-void cd_home()
+int cd_home()
 {
+    int exit = 0;
     const char* const home = getenv("HOME");
     if (home)
         if (chdir(home) == -1)
+        {
             perror("chdir()");
+            exit = 1;
+        }
+    return exit;
 }
 
-void my_cd(char* path)
+int my_cd(char* path)
 {
+    int exit = 0;
     if (strcmp(path, "~") == 0)
-        cd_home();
+        return cd_home();
     else if (chdir(path) == -1)
+    {
         perror("chdir()");
+        exit = 1;
+    }
+    return exit;
 }
 
-void my_echo(char** cmd)
+int my_echo(char** cmd)
 {
+    int exit = 0;
+
     int n = 0;
     int s = 0;
     size_t l = len_array(cmd);
@@ -68,9 +80,10 @@ void my_echo(char** cmd)
     }
     if (!n)
         printf("\n");
+    return exit;
 }
 
-void my_exit(char** cmd)
+int my_exit(char** cmd)
 {
     int ret = 0;
     if (len_array(cmd) > 1)
@@ -78,15 +91,21 @@ void my_exit(char** cmd)
     free_array(cmd);
     cmd = NULL;
     exit(ret);
+    return ret;
 }
 
-void my_kill(char** cmd)
+int my_kill(char** cmd)
 {
+    int exit = 0;
     int signal = -atoi(cmd[1]);
     for (size_t i = 3; cmd[i]; i++)
     {
         int pid = atoi(cmd[i]);
         if (kill(pid, signal) != 0)
+        {
             printf("no such process");
+            exit = 1;
+        }
     }
+    return exit;
 }
