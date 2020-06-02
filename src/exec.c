@@ -17,6 +17,7 @@ int exec(char** cmd)
     }
     else
     {
+
         // strip quotes from the string to echo
         if (strcmp(cmd[0], "/usr/bin/echo") == 0
             || strcmp(cmd[0], "/bin/echo") == 0)

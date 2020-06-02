@@ -105,6 +105,6 @@ int main(int argc, char** argv)
     }
     else
         exit = shell_loop(stdin);
-    printf("exited with :%d\n", exit);
+    //printf("exited with :%d\n", exit);
     return exit;
 }
