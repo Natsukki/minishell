@@ -51,8 +51,9 @@ int my_echo(char** cmd)
         }
         // strip quotes at begin and end of string
         strip_quotes(i, len, cmd);
-
         printf("%s", cmd[i]);
+        if (l > 2 && !n)
+            printf(" ");
     }
     if (!n)
         printf("\n");

@@ -13,3 +13,4 @@ size_t len_array(char** array);
 int is_sequence(char* input);
 void strip_quotes(int i, size_t len, char** cmd);
 int fileExists(const char *filename);
+void abs_path(char** cmd);

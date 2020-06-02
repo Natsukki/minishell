@@ -52,46 +52,6 @@ int exec_builtin(char** cmd)
     return exit;
 }
 
-void abs_path(char** cmd)
-{
-    char** parsed_path = NULL;
-    char* path = strdup(getenv("PATH"));
-    char* bin = NULL;
-
-        if (cmd[0] != NULL && cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0)
-        {
-            parsed_path = parse(path, ":");
-            free(path);
-            path = NULL;
-
-            for (size_t i = 0; parsed_path[i]; i++)
-            {
-                bin = calloc(sizeof(char), strlen(parsed_path[i]) + 1 + strlen(cmd[0]) + 1);
-                if (bin == NULL)
-                    break;
-
-                strcat(bin, parsed_path[i]);
-                strcat(bin, "/");
-                strcat(bin, cmd[0]);
-
-                if (!access(bin, F_OK))
-                    break;
-
-                free(bin);
-                bin = NULL;
-            }
-
-            free_array(parsed_path);
-            free(cmd[0]);
-            cmd[0] = bin;
-        }
-        else
-        {
-            free(path);
-            path = NULL;
-        }
-}
-
 int exec_sequence(char* input, int seq)
 {
     int exit = 0;
@@ -154,4 +114,12 @@ int exec_sequence(char* input, int seq)
     }
     free_array(parsed);
     return exit;
+}
+
+
+int exec_redir(char** cmd, int redir)
+{
+    cmd = cmd;
+    redir = redir;
+    return 0;
 }

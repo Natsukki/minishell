@@ -52,7 +52,6 @@ int shell_loop(FILE *file)
             {
                 if (!strcmp(cmd[0], "false"))
                 {
-                    printf("false main\n");
                     exit = 1;
                     continue;
                 }
