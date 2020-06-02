@@ -1,0 +1,30 @@
+- name: simple_cat
+  stdin: cat testsuite.py
+  category: simple_command
+- name: git_status
+  stdin: git status
+  category: simple_command
+- name: touch_new_file
+  stdin: touch new_file
+  category: file_manipulation
+- name: rm_new_file
+  stdin: rm -f new_file
+  category: file_manipulation
+- name: simple_echo
+  stdin: echo simple_echo_works
+  category: simple_command
+- name: touch_existing_file
+  stdin: touch testsuite.py
+  category: file_manipulation
+- name: echo_with_opt
+  stdin: echo -n "yyyyy"
+  category: builtins
+- name: simple_cd
+  stdin: cd ..
+  category: builtins
+- name: cd_home
+  stdin: cd ~
+  category: builtins
+- name: cd_no_file
+  stdin: cd pp
+  category: err_test
