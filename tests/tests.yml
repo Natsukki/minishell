@@ -28,3 +28,33 @@
 - name: cd_no_file
   stdin: cd pp
   category: err_test
+- name: true_and_echo
+  stdin: true && echo e
+  category: sequence
+- name: false_and_echo
+  stdin: false && echo o
+  category: sequence
+- name: advanced_sequence
+  stdin:  echo -n Y; echo -n A || echo -n A && echo -n K || echo U; echo A
+  category: sequence
+- name: false_or
+  stdin: false || echo OK
+  category: sequence
+- name: true_or
+  stdin: true || echo OK
+  category: sequence
+- name: true_and
+  stdin: true && echo OK;
+  category: sequence
+- name: simple_sequence
+  stdin: echo -n Y; echo -n A ; echo -n K ;echo A
+  category: sequence
+- name: source_echo
+  stdin: /bin/echo -e "test\ntest"
+  category: simple_command
+- name: echo_e
+  stdin: echo -e "test\ntest"
+  category: builtins
+- name: myecho_opt
+  stdin: echo -n test
+  category: builtins
