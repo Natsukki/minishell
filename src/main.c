@@ -39,14 +39,23 @@ int shell_loop(FILE *file)
         char** parsed = parse(input, ";");
         for (size_t i = 0; parsed[i]; i++)
         {
-            int seq = is_sequence(input);
-            if (seq)
-                exit = exec_sequence(input, seq);
             if (!strcmp(parsed[i], "\n"))
                 break;
+            int seq = is_sequence(parsed[i]);
+            if (seq)
+            {
+                exit = exec_sequence(parsed[i], seq);
+                continue;
+            }
             char** cmd = parse(parsed[i], " \n\t");
             if(is_builtin(cmd[0]) == false)
             {
+                if (!strcmp(cmd[0], "false"))
+                {
+                    printf("false main\n");
+                    exit = 1;
+                    continue;
+                }
                 char* tmp = strdup(cmd[0]);
                 abs_path(cmd);
                 if (cmd[0] == NULL)
@@ -54,6 +63,8 @@ int shell_loop(FILE *file)
                     printf("minishell: %s: command not found\n", tmp);
                     exit = 127;
                 }
+                else if (!strcmp(cmd[0], "false"))
+                    exit = 1;
                 else
                 {
                     exit = exec(cmd);

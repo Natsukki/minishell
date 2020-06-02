@@ -10,3 +10,4 @@
 void free_array(char** rray);
 size_t len_array(char** array);
 int is_sequence(char* input);
+void strip_quotes(int i, size_t len, char** cmd);

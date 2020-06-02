@@ -39,9 +39,7 @@ int my_cd(char* path)
 int my_echo(char** cmd)
 {
     int exit = 0;
-
     int n = 0;
-    int s = 0;
     size_t l = len_array(cmd);
     for (size_t i = 1; i < l && cmd[i]; i++)
     {
@@ -49,34 +47,12 @@ int my_echo(char** cmd)
         if (!strcmp(cmd[i], "-n"))
         {
             n = 1;
-            if (l > 3 && !s)
-            {
-                s = 1;
-                memmove(cmd[2], cmd[2] + 1, strlen(cmd[1]));
-            }
             continue;
         }
-        else if (l > 2 && !s)
-        {
-            s = 1;
-            memmove(cmd[1], cmd[1] + 1, strlen(cmd[1]));
-        }
-        if (s && i == l - 1)
-        {
-            cmd[i][len - 1] = 0;
-        }
         // strip quotes at begin and end of string
-        if (cmd[i][0] == '"' && cmd[i][len - 1] == '"')
-        {
-            if (len > 2)
-            {
-                memmove(cmd[i], cmd[i] + 1, len - 2);
-                cmd[i][len - 2] = 0;
-            }
-        }
+        strip_quotes(i, len, cmd);
+
         printf("%s", cmd[i]);
-        if (s && i < l - 1)
-            printf(" ");
     }
     if (!n)
         printf("\n");
