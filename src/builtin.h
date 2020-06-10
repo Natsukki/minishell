@@ -5,6 +5,7 @@
 #include <wait.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <err.h>
 
 #include "utils.h"
 

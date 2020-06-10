@@ -17,7 +17,7 @@ int cd_home()
     if (home)
         if (chdir(home) == -1)
         {
-            perror("chdir()");
+            warn("cd: %s", home);
             exit = 1;
         }
     return exit;
@@ -30,7 +30,7 @@ int my_cd(char* path)
         return cd_home();
     else if (chdir(path) == -1)
     {
-        perror("chdir()");
+        warn("cd: %s", path);
         exit = 1;
     }
     return exit;
@@ -63,8 +63,21 @@ int my_echo(char** cmd)
 int my_exit(char** cmd)
 {
     int ret = 0;
-    if (len_array(cmd) > 1)
+    size_t l = len_array(cmd);
+    if (l > 2)
+    {
+        warnx("exit: too many arguments");
+        return 1;
+    }
+    if (l > 1)
+    {
+        if (!is_numerical(cmd[1]))
+        {
+            warnx("exit: not an integer");
+            return 2;
+        }
         ret = atoi(cmd[1]);
+    }
     free_array(cmd);
     cmd = NULL;
     exit(ret);
