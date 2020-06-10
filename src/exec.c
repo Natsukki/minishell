@@ -2,6 +2,7 @@
 
 int exec(char** cmd)
 {
+    abs_path(cmd);
     int exit = 0;
     int st = 0;
     pid_t pid = 0;
@@ -17,7 +18,6 @@ int exec(char** cmd)
     }
     else
     {
-
         // strip quotes from the string to echo
         if (strcmp(cmd[0], "/usr/bin/echo") == 0
             || strcmp(cmd[0], "/bin/echo") == 0)
@@ -33,8 +33,20 @@ int exec(char** cmd)
             perror("Command not found");
             exit = 127;
         }
-//        exit(EXIT_FAILURE);
     }
+
+    if (strcmp(cmd[0], "/usr/bin/cat") == 0 || strcmp(cmd[0], "/bin/cat") == 0
+        || strcmp(cmd[0], "cat") == 0)
+    {
+        for (size_t i = 1; i < len_array(cmd); i++)
+        {
+            if (!fileExists(cmd[i]))
+            {
+                exit = 1;
+            }
+        }
+    }
+
     return exit;
 }
 
@@ -42,7 +54,14 @@ int exec_builtin(char** cmd)
 {
     int exit = 0;
     if (!strcmp(cmd[0], "cd"))
+    {
+        if (len_array(cmd) > 2)
+        {
+            warnx("cd: too many arguments");
+            return 1;
+        }
         exit = my_cd(cmd[1]);
+    }
     if (!strcmp(cmd[0], "echo"))
         exit = my_echo(cmd);
     if (!strcmp(cmd[0], "exit"))
@@ -117,9 +136,53 @@ int exec_sequence(char* input, int seq)
 }
 
 
-int exec_redir(char** cmd, int redir)
+int exec_redir(char* input, int redir)
 {
-    cmd = cmd;
-    redir = redir;
-    return 0;
+    int exit = 0;
+    char** parsed = parse(input, "<>>\n\t");
+    int fd = -1;
+    int fd_bis = -1;
+    fd = fd;
+    fd_bis = fd_bis;
+    if (!parsed[1])
+    {
+        warnx("wrong use of redir");
+        return 1;
+    }
+    strip_space(parsed[1]);
+    switch (redir)
+    {
+    case 1:
+        fd = open(parsed[1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+        fd_bis = 1;
+        break;
+    case 2:
+        fd = open(parsed[1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+        fd_bis = 1;
+        break;
+    case 3:
+        fd = open(parsed[1], O_RDONLY);
+        fd_bis = 0;
+        break;
+    }
+
+    fflush(stdout);
+    fflush(stderr);
+
+    if (fd == -1)
+    {
+        warn("Redirection not handled");
+        return 1;
+    }
+
+    int old = dup(fd_bis);
+    dup2(fd, fd_bis);
+    exec(parse(parsed[0], " \n\t"));
+    close(fd);
+    if (old != -1)
+    {
+        dup2(old, fd_bis);
+        close(old);
+    }
+    return exit;
 }

@@ -24,7 +24,7 @@ int shell_loop(FILE *file)
         err(12, "calloc error");
     }
     //write prompt
-    if (isatty (fileno(file)))
+    if (isatty(fileno(file)))
         printf("minishell$ ");
     signal(SIGINT, sigintHandler);
     while (getline(&input, &input_size, file) > 0)
@@ -47,6 +47,15 @@ int shell_loop(FILE *file)
                 exit = exec_sequence(parsed[i], seq);
                 continue;
             }
+
+            int redir = is_redir(parsed[i]);
+            //printf("redir %d\n", redir);
+            if (redir)
+            {
+                exit = exec_redir(parsed[i], redir);
+                continue;
+            }
+
             char** cmd = parse(parsed[i], " \n\t");
             if(is_builtin(cmd[0]) == false)
             {
@@ -56,7 +65,6 @@ int shell_loop(FILE *file)
                     continue;
                 }
                 char* tmp = strdup(cmd[0]);
-                abs_path(cmd);
                 if (cmd[0] == NULL)
                 {
                     printf("minishell: %s: command not found\n", tmp);
