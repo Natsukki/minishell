@@ -14,3 +14,6 @@ int is_sequence(char* input);
 void strip_quotes(int i, size_t len, char** cmd);
 int fileExists(const char *filename);
 void abs_path(char** cmd);
+int is_redir(char* input);
+int is_numerical(char* input);
+void strip_space(char* line);

@@ -49,6 +49,14 @@ void strip_quotes(int i, size_t len, char** cmd)
         }
 }
 
+void strip_space(char *line)
+{
+    if (line[0] == ' ')
+    {
+        memmove(line ,line + 1, strlen(line));
+    }
+}
+
 int fileExists(const char *filename){
     struct stat buffer;
     int exist = stat(filename,&buffer);
@@ -97,4 +105,31 @@ void abs_path(char** cmd)
             free(path);
             path = NULL;
         }
+}
+
+int is_redir(char* input)
+{
+    char prev = input[0];
+    int exit = 0;
+    for (size_t i = 0; input[i]; i++)
+    {
+        if (input[i] == '>' && prev != '>')
+            return 1;
+        else if (input[i] == '<' && prev != '<')
+            exit = 2;
+        else if (input[i] == '>' && prev == '>')
+            exit = 3;
+        prev = input[i];
+    }
+    return exit;
+}
+
+int is_numerical(char* input)
+{
+    for (int i = 0; input[i]; i++)
+    {
+        if (input[i] < '0' || input[i] > '9')
+            return 0;
+    }
+    return 1;
 }
