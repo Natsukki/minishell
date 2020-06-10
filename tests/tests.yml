@@ -58,3 +58,6 @@
 - name: myecho_opt
   stdin: echo -n test
   category: builtins
+- name: cat_no_file
+  stdin: cat oitoeoeuroeur
+  category: err_test
