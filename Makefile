@@ -10,4 +10,4 @@ debug :
 	${CC} ${CFLAGS} ${SRC} -g -o minishell
 
 clean :
-	rm minishell
+	rm minishellé
