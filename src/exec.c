@@ -2,7 +2,7 @@
 
 int exec(char** cmd)
 {
-    abs_path(cmd);
+    //abs_path(cmd);
     int exit = 0;
     int st = 0;
     pid_t pid = 0;
@@ -28,7 +28,7 @@ int exec(char** cmd)
                 strip_quotes(i, len, cmd);
             }
         }
-        if (execve(cmd[0], cmd, NULL) == -1)
+        if (execvp(cmd[0], cmd) == -1)
         {
             perror("Command not found");
             exit = 127;
@@ -149,21 +149,24 @@ int exec_redir(char* input, int redir)
         warnx("wrong use of redir");
         return 1;
     }
-    strip_space(parsed[1]);
-    switch (redir)
+    for (size_t i = 1; parsed[i]; i++)
     {
-    case 1:
-        fd = open(parsed[1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-        fd_bis = 1;
-        break;
-    case 2:
-        fd = open(parsed[1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-        fd_bis = 1;
-        break;
-    case 3:
-        fd = open(parsed[1], O_RDONLY);
-        fd_bis = 0;
-        break;
+        strip_space(parsed[i]);
+        switch (redir)
+        {
+        case 1:
+            fd = open(parsed[i], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+            fd_bis = 1;
+            break;
+        case 2:
+            fd = open(parsed[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+            fd_bis = 1;
+            break;
+        case 3:
+            fd = open(parsed[i], O_RDONLY);
+            fd_bis = 0;
+            break;
+        }
     }
 
     fflush(stdout);

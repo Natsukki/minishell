@@ -51,9 +51,17 @@ void strip_quotes(int i, size_t len, char** cmd)
 
 void strip_space(char *line)
 {
-    if (line[0] == ' ')
+    size_t l = strlen(line);
+    for (size_t i = 0; i < l; i++)
     {
-        memmove(line ,line + 1, strlen(line));
+        if (line[i] == ' ')
+        {
+            for (size_t j = i; j < l; j++)
+            {
+                line[j] = line[j + 1];
+            }
+            l--;
+        }
     }
 }
 
