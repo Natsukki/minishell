@@ -61,3 +61,18 @@
 - name: cat_no_file
   stdin: cat oitoeoeuroeur
   category: err_test
+- name: simple_redir
+  stdin: cat t.sh > t
+  category: redirection
+- name: exit_no_number
+  stdin: exit prout
+  category: err_test
+- name: mkdir
+  stdin: mkdir truc; rm -r truc;
+  category: simple_command
+- name: cat_dir
+  stdin: cat truc
+  category: err_test
+- name: multi_redir
+  stdin: echo foo > bar > baz
+  category: redirection
