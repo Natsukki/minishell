@@ -63,7 +63,7 @@ int my_echo(char** cmd)
 int my_exit(char** cmd)
 {
     int ret = 0;
-    size_t l = len_array(cmd);
+     size_t l = len_array(cmd);
     if (l > 2)
     {
         warnx("exit: too many arguments");
@@ -73,7 +73,7 @@ int my_exit(char** cmd)
     {
         if (!is_numerical(cmd[1]))
         {
-            warnx("exit: not an integer");
+            warnx("exit: numeric argument required");
             return 2;
         }
         ret = atoi(cmd[1]);

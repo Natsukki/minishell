@@ -2,8 +2,6 @@
 
 int exec(char** cmd)
 {
-    //abs_path(cmd);
-    int exit = 0;
     int st = 0;
     pid_t pid = 0;
 
@@ -31,23 +29,10 @@ int exec(char** cmd)
         if (execvp(cmd[0], cmd) == -1)
         {
             perror("Command not found");
-            exit = 127;
+            return 127;
         }
     }
-
-    if (strcmp(cmd[0], "/usr/bin/cat") == 0 || strcmp(cmd[0], "/bin/cat") == 0
-        || strcmp(cmd[0], "cat") == 0)
-    {
-        for (size_t i = 1; i < len_array(cmd); i++)
-        {
-            if (!fileExists(cmd[i]))
-            {
-                exit = 1;
-            }
-        }
-    }
-
-    return exit;
+    return WEXITSTATUS(st);
 }
 
 int exec_builtin(char** cmd)
