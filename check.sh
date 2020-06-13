@@ -1,6 +1,6 @@
-make
+make debug
 cd tests/
-./testsuite.py ../minishell
+./testsuite.py  ../minishell
 rm -r truc
 rm t bar baz
 cd ..

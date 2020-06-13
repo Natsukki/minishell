@@ -76,3 +76,9 @@
 - name: multi_redir
   stdin: echo foo > bar > baz
   category: redirection
+- name: echo_ret_code_valid
+  stdin: ls; echo $?
+  category: simple_command
+- name: echo_ret_code_invalid
+  stdin: llklklk; echo $?
+  category: simple_command
