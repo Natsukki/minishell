@@ -5,6 +5,8 @@
 #include "exec.h"
 #include "builtin.h"
 
+int exit_code = 0;
+
 void sigintHandler (int sig_num)
 {
     sig_num = sig_num;
@@ -45,23 +47,38 @@ int shell_loop(FILE *file)
             if (seq)
             {
                 exit = exec_sequence(parsed[i], seq);
+                exit_code = exit;
                 continue;
             }
-
             int redir = is_redir(parsed[i]);
-            //printf("redir %d\n", redir);
             if (redir)
             {
                 exit = exec_redir(parsed[i], redir);
+                exit_code = exit;
                 continue;
             }
 
             char** cmd = parse(parsed[i], " \n\t");
+            if (!strcmp("/usr/bin/echo", cmd[0])
+                || !strcmp("/bin/echo", cmd[0])
+                || !strcmp("echo", cmd[0]))
+            {
+                if (!strcmp(cmd[1], "$?"))
+                {
+                    printf("%d\n", exit_code);
+                    exit = 0;
+                    exit_code = exit;
+                    free_array(cmd);
+                    break;
+                }
+            }
             if(is_builtin(cmd[0]) == false)
             {
                 if (!strcmp(cmd[0], "false"))
                 {
                     exit = 1;
+                    exit_code = 1;
+                    free_array(cmd);
                     continue;
                 }
                 char* tmp = strdup(cmd[0]);
@@ -69,26 +86,35 @@ int shell_loop(FILE *file)
                 {
                     printf("minishell: %s: command not found\n", tmp);
                     exit = 127;
+                    exit_code = exit;
                 }
                 else if (!strcmp(cmd[0], "false"))
+                {
                     exit = 1;
+                    exit_code = exit;
+                }
                 else
                 {
                     exit = exec(cmd);
+                    exit_code = exit;
                 }
                 free(tmp);
                 tmp = NULL;
             }
             else
+            {
                 exit = exec_builtin(cmd);
+                exit_code = exit;
+            }
             free_array(cmd);
         }
         free_array(parsed);
-            if (isatty (fileno(file)))
+        if (isatty (fileno(file)))
                 printf("minishell$ ");
     }
 
     free(input);
+    exit_code = exit;
     return exit;
 }
 
@@ -112,6 +138,5 @@ int main(int argc, char** argv)
     }
     else
         exit = shell_loop(stdin);
-    //printf("exited with :%d\n", exit);
     return exit;
 }

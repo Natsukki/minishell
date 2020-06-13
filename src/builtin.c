@@ -63,7 +63,7 @@ int my_echo(char** cmd)
 int my_exit(char** cmd)
 {
     int ret = 0;
-     size_t l = len_array(cmd);
+    size_t l = len_array(cmd);
     if (l > 2)
     {
         warnx("exit: too many arguments");

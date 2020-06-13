@@ -83,7 +83,6 @@ int exec_sequence(char* input, int seq)
                     continue;
                 }
             char* tmp = strdup(cmd[0]);
-            abs_path(cmd);
             if (cmd[0] == NULL)
             {
                 printf("minishell: %s: command not found\n", tmp);
@@ -127,11 +126,10 @@ int exec_redir(char* input, int redir)
     char** parsed = parse(input, "<>>\n\t");
     int fd = -1;
     int fd_bis = -1;
-    fd = fd;
-    fd_bis = fd_bis;
     if (!parsed[1])
     {
         warnx("wrong use of redir");
+        free_array(parsed);
         return 1;
     }
     for (size_t i = 1; parsed[i]; i++)
@@ -160,17 +158,26 @@ int exec_redir(char* input, int redir)
     if (fd == -1)
     {
         warn("Redirection not handled");
+        free_array(parsed);
         return 1;
     }
 
     int old = dup(fd_bis);
     dup2(fd, fd_bis);
-    exec(parse(parsed[0], " \n\t"));
+
+    char** cmd = parse(parsed[0], " \n\t");
+    /*if (is_builtin(cmd[0]))
+        exit = exec_builtin(cmd);
+    else*/
+        exit = exec(cmd);
+    free_array(cmd);
     close(fd);
     if (old != -1)
     {
         dup2(old, fd_bis);
         close(old);
     }
+
+    free_array(parsed);
     return exit;
 }
