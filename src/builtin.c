@@ -86,8 +86,9 @@ int my_exit(char** cmd)
 
 int my_kill(char** cmd)
 {
+    int signal = 15;
     int exit = 0;
-    int signal = -atoi(cmd[1]);
+    signal = -atoi(cmd[1]);
     for (size_t i = 3; cmd[i]; i++)
     {
         int pid = atoi(cmd[i]);

@@ -1,38 +1,45 @@
 #include "exec.h"
 
+static int my_wait(int pid)
+{
+    int ret;
+    if (waitpid(pid, &ret, 0) == -1)
+    {
+        if (errno == EINTR)
+            return 130;
+        warn("error while waiting for child");
+        return 1;
+    }
+    return WEXITSTATUS(ret);
+}
+
 int exec(char** cmd)
 {
-    int st = 0;
     pid_t pid = 0;
+
+    // strip quotes from the string to echo
+    if (strcmp(cmd[0], "/usr/bin/echo") == 0
+        || strcmp(cmd[0], "/bin/echo") == 0)
+    {
+        for (size_t i = 0; i < len_array(cmd); i++)
+        {
+            size_t len = strlen(cmd[i]);
+            strip_quotes(i, len, cmd);
+        }
+    }
 
     // fork
     pid = fork();
-    if (pid == -1)
-        perror("fork error");
-    else if (pid > 0)
-    {
-        waitpid(pid, &st, 0);
-        kill(pid, SIGTERM);
-    }
+    if (pid)
+        return my_wait(pid);
     else
     {
-        // strip quotes from the string to echo
-        if (strcmp(cmd[0], "/usr/bin/echo") == 0
-            || strcmp(cmd[0], "/bin/echo") == 0)
-        {
-            for (size_t i = 0; i < len_array(cmd); i++)
-            {
-                size_t len = strlen(cmd[i]);
-                strip_quotes(i, len, cmd);
-            }
-        }
-        if (execvp(cmd[0], cmd) == -1)
-        {
-            perror("Command not found");
-            return 127;
-        }
+        execvp(cmd[0], cmd);
+        int ret = 127;
+        if (errno == ENOEXEC)
+            ret = 126;
+        err(ret, "%s", cmd[0]);
     }
-    return WEXITSTATUS(st);
 }
 
 int exec_builtin(char** cmd)
