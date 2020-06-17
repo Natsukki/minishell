@@ -92,7 +92,7 @@ int exec_sequence(char* input, int seq)
             char* tmp = strdup(cmd[0]);
             if (cmd[0] == NULL)
             {
-                printf("minishell: %s: command not found\n", tmp);
+                fprintf(stderr, "minishell: %s: command not found\n", tmp);
                 exit = 127;
                 if (seq == 1)
                 {
@@ -173,9 +173,9 @@ int exec_redir(char* input, int redir)
     dup2(fd, fd_bis);
 
     char** cmd = parse(parsed[0], " \n\t");
-    /*if (is_builtin(cmd[0]))
+    if (is_builtin(cmd[0]))
         exit = exec_builtin(cmd);
-    else*/
+    else
         exit = exec(cmd);
     free_array(cmd);
     close(fd);
@@ -187,4 +187,10 @@ int exec_redir(char* input, int redir)
 
     free_array(parsed);
     return exit;
+}
+
+int exec_pipe(char** cmd)
+{
+    cmd = cmd;
+    return 1;
 }

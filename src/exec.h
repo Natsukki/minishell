@@ -18,3 +18,4 @@ int exec(char** cmd);
 int exec_builtin(char** cmd);
 int exec_sequence(char* input, int seq);
 int exec_redir(char* input, int redir);
+int exec_pipe(char**cmd);

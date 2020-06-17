@@ -84,7 +84,7 @@ int shell_loop(FILE *file)
                 char* tmp = strdup(cmd[0]);
                 if (cmd[0] == NULL)
                 {
-                    printf("minishell: %s: command not found\n", tmp);
+                    fprintf(stderr, "minishell: %s: command not found\n", tmp);
                     ret = 127;
                     ret_code = ret;
                 }
