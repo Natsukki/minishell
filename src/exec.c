@@ -13,6 +13,12 @@ static int my_wait(int pid)
     return WEXITSTATUS(ret);
 }
 
+static void flush()
+{
+    fflush(stdout);
+    fflush(stderr);
+}
+
 int exec(char** cmd)
 {
     pid_t pid = 0;
@@ -154,8 +160,7 @@ int exec_redir(char* input, int redir)
         }
     }
 
-    fflush(stdout);
-    fflush(stderr);
+    flush();
 
     if (fd == -1)
     {
@@ -168,9 +173,6 @@ int exec_redir(char* input, int redir)
     dup2(fd, fd_bis);
 
     char** cmd = parse_no_ret(parsed[0], " \n\t");
-    /* if (is_builtin(cmd[0])) */
-    /*     exit = exec_builtin(cmd); */
-    /* else */
     exit = exec(cmd);
     free_array(cmd);
     close(fd);
@@ -186,6 +188,36 @@ int exec_redir(char* input, int redir)
 
 int exec_pipe(char** cmd)
 {
-    cmd = cmd;
-    return 1;
+    int ret = 0;
+    size_t pipe_nb = len_array(cmd);
+    int fd[2];
+    size_t index;
+    pid_t pid = 0;
+    for (index = 0; index < pipe_nb && cmd[index + 1]; index++)
+    {
+        char** left = parse_no_ret(cmd[index], " \n\t");
+        char** right = parse_no_ret(cmd[index + 1], " \n\t");
+
+        if (pipe(fd) != 0)
+        {
+            warn("pipe failed");
+            return -1;
+        }
+
+        flush();
+
+        pid = fork();
+
+        if (pid)
+        {
+            close(fd[0]);
+            int old = dup(STDOUT_FILENO);
+            close(STDOUT_FILENO);
+            dup2(fd[1], STDOUT_FILENO);
+            close(fd[1]);
+            ret = exec(left);
+            flush();
+        }
+    }
+    return ret;
 }
