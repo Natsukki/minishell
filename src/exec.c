@@ -38,7 +38,7 @@ int exec(char** cmd)
         int ret = 127;
         if (errno == ENOEXEC)
             ret = 126;
-        err(ret, "%s", cmd[0]);
+        errx(ret, "%s: command not found", cmd[0]);
     }
 }
 
@@ -83,17 +83,16 @@ int exec_sequence(char* input, int seq)
         if(is_builtin(cmd[0]) == false)
         {
             if (!strcmp(cmd[0], "false"))
-                {
-                    exit = 1;
-                    if (seq == 1)
-                        break;
-                    continue;
-                }
-            char* tmp = strdup(cmd[0]);
-            if (cmd[0] == NULL)
             {
-                fprintf(stderr, "minishell: %s: command not found\n", tmp);
-                exit = 127;
+                exit = 1;
+                if (seq == 1)
+                    break;
+                continue;
+            }
+            char* tmp = strdup(cmd[0]);
+            exit = exec(cmd);
+            if (exit == 127)
+            {
                 if (seq == 1)
                 {
                     free(tmp);
@@ -108,10 +107,6 @@ int exec_sequence(char* input, int seq)
                     free_array(cmd);
                     continue;
                 }
-            }
-            else
-            {
-                exit = exec(cmd);
             }
             free(tmp);
             tmp = NULL;
