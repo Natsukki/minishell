@@ -168,10 +168,10 @@ int exec_redir(char* input, int redir)
     dup2(fd, fd_bis);
 
     char** cmd = parse_no_ret(parsed[0], " \n\t");
-    if (is_builtin(cmd[0]))
-        exit = exec_builtin(cmd);
-    else
-        exit = exec(cmd);
+    /* if (is_builtin(cmd[0])) */
+    /*     exit = exec_builtin(cmd); */
+    /* else */
+    exit = exec(cmd);
     free_array(cmd);
     close(fd);
     if (old != -1)
