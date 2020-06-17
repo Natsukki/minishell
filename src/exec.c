@@ -68,9 +68,9 @@ int exec_sequence(char* input, int seq)
     int exit = 0;
     char** parsed;
     if (seq == 1)
-        parsed = parse(input, "&&");
+        parsed = parse_no_ret(input, "&&");
     if (seq == 2)
-        parsed = parse(input, "||");
+        parsed = parse_no_ret(input, "||");
     for (size_t i = 0; parsed[i]; i++)
     {
         int seq2 = is_sequence(parsed[i]);
@@ -79,7 +79,7 @@ int exec_sequence(char* input, int seq)
             exit = exec_sequence(parsed[i], seq2);
             continue;
         }
-        char** cmd = parse(parsed[i], " \n\t");
+        char** cmd = parse_no_ret(parsed[i], " \n\t");
         if(is_builtin(cmd[0]) == false)
         {
             if (!strcmp(cmd[0], "false"))
@@ -125,7 +125,7 @@ int exec_sequence(char* input, int seq)
 int exec_redir(char* input, int redir)
 {
     int exit = 0;
-    char** parsed = parse(input, "<>>\n\t");
+    char** parsed = parse_no_ret(input, "<>>\n\t");
     int fd = -1;
     int fd_bis = -1;
     if (!parsed[1])
@@ -167,7 +167,7 @@ int exec_redir(char* input, int redir)
     int old = dup(fd_bis);
     dup2(fd, fd_bis);
 
-    char** cmd = parse(parsed[0], " \n\t");
+    char** cmd = parse_no_ret(parsed[0], " \n\t");
     if (is_builtin(cmd[0]))
         exit = exec_builtin(cmd);
     else
