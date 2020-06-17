@@ -141,3 +141,12 @@ int is_numerical(char* input)
     }
     return 1;
 }
+
+int is_echo(char** cmd)
+{
+    if (!strcmp("/usr/bin/echo", cmd[0])
+                || !strcmp("/bin/echo", cmd[0])
+                || !strcmp("echo", cmd[0]))
+        return 1;
+    return 0;
+}

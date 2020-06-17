@@ -11,6 +11,33 @@ static void sigintHandler (int sig_num)
     signal(SIGINT, sigintHandler);
 }
 
+static char* to_string()
+{
+    char* ret = "0";
+    switch(ret_code)
+    {
+    case 1:
+        ret = "1";
+        break;
+    case 127:
+        ret = "127";
+        break;
+    case 128:
+        ret = "128";
+        break;
+    case 2:
+        ret = "2";
+        break;
+    case 126:
+        ret = "126";
+        break;
+    case 130:
+        ret = "130";
+        break;
+    }
+    return ret;
+}
+
 static void prompt(FILE *file)
 {
     if (isatty(fileno(file)))
@@ -65,11 +92,10 @@ int shell_loop(FILE *file)
             {
                 if (!strcmp(cmd[1], "$?"))
                 {
-                    printf("%d\n", ret_code);
+                    char* todo = to_string();
+                    strcpy(cmd[1], todo);
                     ret = 0;
                     ret_code = ret;
-                    free_array(cmd);
-                    break;
                 }
             }
             if(is_builtin(cmd[0]) == false)
