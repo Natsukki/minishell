@@ -1,8 +1,6 @@
 #include "shell.h"
 
-
 int ret_code = 0;
-
 
 static void sigintHandler (int sig_num)
 {
@@ -69,13 +67,7 @@ int shell_loop(FILE *file)
                     continue;
                 }
                 char* tmp = strdup(cmd[0]);
-                if (cmd[0] == NULL)
-                {
-                    fprintf(stderr, "minishell: %s: command not found\n", tmp);
-                    ret = 127;
-                    ret_code = ret;
-                }
-                else if (!strcmp(cmd[0], "false"))
+                if (!strcmp(cmd[0], "false"))
                 {
                     ret = 1;
                     ret_code = ret;

@@ -47,6 +47,14 @@ void strip_quotes(int i, size_t len, char** cmd)
                 cmd[i][len - 2] = 0;
             }
         }
+    if (cmd[i][0] == '"')
+    {
+        memmove(cmd[i], cmd[i] + 1, strlen(cmd[i]));
+    }
+    if (cmd[i][len - 1] == '"')
+    {
+        cmd[i][len - 1] = 0;
+    }
 }
 
 void strip_space(char *line)

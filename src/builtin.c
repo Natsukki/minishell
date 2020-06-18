@@ -94,7 +94,7 @@ int my_kill(char** cmd)
         int pid = atoi(cmd[i]);
         if (kill(pid, signal) != 0)
         {
-            printf("no such process");
+            fprintf(stderr, "no such process");
             exit = 1;
         }
     }

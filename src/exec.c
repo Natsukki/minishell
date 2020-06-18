@@ -186,38 +186,38 @@ int exec_redir(char* input, int redir)
     return exit;
 }
 
-int exec_pipe(char** cmd)
-{
-    int ret = 0;
-    size_t pipe_nb = len_array(cmd);
-    int fd[2];
-    size_t index;
-    pid_t pid = 0;
-    for (index = 0; index < pipe_nb && cmd[index + 1]; index++)
-    {
-        char** left = parse_no_ret(cmd[index], " \n\t");
-        char** right = parse_no_ret(cmd[index + 1], " \n\t");
+/* int exec_pipe(char** cmd) */
+/* { */
+/*     int ret = 0; */
+/*     size_t pipe_nb = len_array(cmd); */
+/*     int fd[2]; */
+/*     size_t index; */
+/*     pid_t pid = 0; */
+/*     for (index = 0; index < pipe_nb && cmd[index + 1]; index++) */
+/*     { */
+/*         char** left = parse_no_ret(cmd[index], " \n\t"); */
+/*         char** right = parse_no_ret(cmd[index + 1], " \n\t"); */
 
-        if (pipe(fd) != 0)
-        {
-            warn("pipe failed");
-            return -1;
-        }
+/*         if (pipe(fd) != 0) */
+/*         { */
+/*             warn("pipe failed"); */
+/*             return -1; */
+/*         } */
 
-        flush();
+/*         flush(); */
 
-        pid = fork();
+/*         pid = fork(); */
 
-        if (pid)
-        {
-            close(fd[0]);
-            int old = dup(STDOUT_FILENO);
-            close(STDOUT_FILENO);
-            dup2(fd[1], STDOUT_FILENO);
-            close(fd[1]);
-            ret = exec(left);
-            flush();
-        }
-    }
-    return ret;
-}
+/*         if (pid) */
+/*         { */
+/*             close(fd[0]); */
+/*             int old = dup(STDOUT_FILENO); */
+/*             close(STDOUT_FILENO); */
+/*             dup2(fd[1], STDOUT_FILENO); */
+/*             close(fd[1]); */
+/*             ret = exec(left); */
+/*             flush(); */
+/*         } */
+/*     } */
+/*     return ret; */
+/* } */
