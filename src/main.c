@@ -1,9 +1,9 @@
 #define _GNU_SOURCE
 
-#include "parse.h"
-#include "exec.h"
-#include "builtin.h"
-#include "shell.h"
+#include "parse/parse.h"
+#include "exec/exec.h"
+#include "builtin/builtin.h"
+#include "shell/shell.h"
 
 int main(int argc, char** argv)
 {

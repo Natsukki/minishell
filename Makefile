@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS= -Wall -Wextra -Werror -pedantic -std=c99
-SRC= src/*
+SRC= src/exec/* src/builtin/* src/parse/* src/shell/* src/utils/* src/main.c
 
 
 all :

@@ -89,12 +89,16 @@ int is_redir(char* input)
     int exit = 0;
     for (size_t i = 0; input[i]; i++)
     {
-        if (input[i] == '>' && prev != '>' && input[i + 1] != '>')
+        if (input[i] == '>' && prev != '>' && input[i + 1] != '>' && prev != '2')
             return 1;
         else if (input[i] == '<')
              return 3;
         else if (input[i] == '>' && prev == '>')
             return  2;
+        else if (input[i] == '>' && prev == '2' && input[i + 1] != '>')
+            return 4;
+        else if (input[i] == '>' && prev == '2' && input[i + 1] == '>')
+            return 5;
         prev = input[i];
     }
     return exit;
@@ -104,6 +108,8 @@ int is_numerical(char* input)
 {
     for (int i = 0; input[i]; i++)
     {
+        if (i == 0 && input[i] == '-')
+            continue;
         if (input[i] < '0' || input[i] > '9')
             return 0;
     }

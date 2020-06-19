@@ -171,7 +171,11 @@ static int in_redir_one(char** parsed, int fd, int fd_bis, int exit)
 int exec_redir(char* input, int redir)
 {
     int exit = 0;
-    char** parsed = parse_no_ret(input, "<>>\n\t");
+    char** parsed = NULL;
+    if (redir == 5 || redir == 4)
+        parsed = parse_no_ret(input, "<2>>\n\t");
+    else
+        parsed = parse_no_ret(input, "<>>\n\t");
     int fd = -1;
     int fd_bis = -1;
     size_t l = len_array(parsed);
@@ -203,6 +207,14 @@ int exec_redir(char* input, int redir)
             case 3:
                 fd = open(parsed[i], O_RDONLY);
                 fd_bis = 0;
+                break;
+            case 4:
+                fd = open(parsed[i], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+                fd_bis = STDERR_FILENO;
+                break;
+            case 5:
+                fd = open(parsed[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+                fd_bis = STDERR_FILENO;
                 break;
             }
         }

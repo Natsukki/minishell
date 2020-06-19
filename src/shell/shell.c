@@ -2,14 +2,6 @@
 
 int ret_code = 0;
 
-static void sigintHandler (int sig_num)
-{
-    sig_num = sig_num;
-    printf("\nminishell$ ");
-    signal(SIGINT, sigintHandler);
-}
-
-
 static void prompt(FILE *file)
 {
     if (isatty(fileno(file)))
@@ -28,7 +20,6 @@ int shell_loop(FILE *file)
         err(12, "calloc error");
     }
     prompt(file);
-    signal(SIGINT, sigintHandler);
     while (getline(&input, &input_size, file) > 0)
     {
         // handling empty input

@@ -82,3 +82,45 @@
 - name: echo_ret_code_invalid
   stdin: llklklk; echo $?
   category: simple_command
+- name: exit_too_many_args
+  stdin: exit 1 1
+  category: err_test
+- name: pipe_cat
+  stdin: cat /etc/passwd | head -1
+  category: pipe
+- name: pipe_echo
+  stdin: echo turanic | cat -e | cat -e
+  category: pipe
+- name: pipe_advanced
+  stdin: cat Makefile | cat | head -2 | cat -e
+  category: pipe
+- name: simple_redir
+  stdin: echo login_x > AUTHORS
+  category: redirection
+- name: simple_double_redir
+  stdin: cat /etc/passwd >> users_list
+  category: redirection
+- name: simple_left_redir
+  stdin: cat < users_list
+  category: redirection
+- name: left_redir
+  stdin: < users_list wc -l
+  category: redirection
+- name: simple_redir_stderr
+  stdin: cat prout 2> test
+  category: redirection
+- name: double_redir_stderr
+  stdin: cat prout 2>> test
+  category: redirection
+- name: advanced_simple_stderr
+  stdin: cat tests.yml toto 2> test
+  category: redirection
+- name: advanced_double_stderr
+  stdin: cat tests.yml prout 2>> test
+  category: redirection
+- name: grep
+  stdin: grep ^root users_list
+  category: simple_command
+- name: advanced_grammar
+  stdin: ls -l -a -F /usr | cat -e | grep ^drw | tail -4
+  category: advanced_grammar

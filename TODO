@@ -1,0 +1,46 @@
+
+                      PROJECT: MINISHELL - TODO
+
+==============================================================
+
+[ ] Minishell
+ |
+ +--[ ] STAGES
+ |   |
+ |   +--[x] Inputs
+ |   |
+ |   |
+ |   +--[x] Execution
+ |   |
+ |   |
+ |   +--[x] Builtins
+ |   |    |
+ |   |    +--[x] echo
+ |   |    |
+ |   |    +--[x] cd
+ |   |    |
+ |   |    +--[x] exit
+ |   |    |
+ |   |    +--[x] kill
+ |   |
+ |   |
+ |   +--[x] Command sequences
+ |   |
+ |   |
+ |   +--[x] Redirections
+ |   |
+ |   |
+ |   +--[x] Pipe
+ |   |
+ |   |
+ |   +--[ ] Advanced grammar
+ |   |
+ |   |
+ |   +--[ ] Environment variables
+ |   |
+ |   |
+ |   +--[x] Return codes
+ |
+ |
+ |
+ +--[x] Testsuite
