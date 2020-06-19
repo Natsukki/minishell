@@ -127,41 +127,23 @@ int exec_sequence(char* input, int seq)
     return exit;
 }
 
-
-int exec_redir(char* input, int redir)
+static int in_redir_one(char** parsed, int fd, int fd_bis, int exit)
 {
-    int exit = 0;
-    char** parsed = parse_no_ret(input, "<>>\n\t");
-    int fd = -1;
-    int fd_bis = -1;
-    if (!parsed[1])
+    char* tmp = parsed[0];
+    char** cmd = parse_no_ret(tmp, " \n\t");
+    fd = open(cmd[0], O_RDONLY);
+    fd_bis = 0;
+    char** bis = NULL;
+    size_t i = 0;
+    for (; cmd[i + 1]; i++)
     {
-        warnx("wrong use of redir");
-        free_array(parsed);
-        return 1;
+        bis = realloc(bis, (i + 1) * sizeof(char *));
+        bis[i] = strdup(cmd[i + 1]);
     }
-    for (size_t i = 1; parsed[i]; i++)
-    {
-        strip_space(parsed[i]);
-        switch (redir)
-        {
-        case 1:
-            fd = open(parsed[i], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-            fd_bis = 1;
-            break;
-        case 2:
-            fd = open(parsed[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
-            fd_bis = 1;
-            break;
-        case 3:
-            fd = open(parsed[i], O_RDONLY);
-            fd_bis = 0;
-            break;
-        }
-    }
+    bis = realloc(bis, (i + 1) * sizeof(char *));
+    bis[i] = NULL;
 
     flush();
-
     if (fd == -1)
     {
         warn("Redirection not handled");
@@ -172,9 +154,9 @@ int exec_redir(char* input, int redir)
     int old = dup(fd_bis);
     dup2(fd, fd_bis);
 
-    char** cmd = parse_no_ret(parsed[0], " \n\t");
-    exit = exec(cmd);
+    exit = exec(bis);
     free_array(cmd);
+    free_array(bis);
     close(fd);
     if (old != -1)
     {
@@ -186,38 +168,138 @@ int exec_redir(char* input, int redir)
     return exit;
 }
 
-/* int exec_pipe(char** cmd) */
-/* { */
-/*     int ret = 0; */
-/*     size_t pipe_nb = len_array(cmd); */
-/*     int fd[2]; */
-/*     size_t index; */
-/*     pid_t pid = 0; */
-/*     for (index = 0; index < pipe_nb && cmd[index + 1]; index++) */
-/*     { */
-/*         char** left = parse_no_ret(cmd[index], " \n\t"); */
-/*         char** right = parse_no_ret(cmd[index + 1], " \n\t"); */
+int exec_redir(char* input, int redir)
+{
+    int exit = 0;
+    char** parsed = parse_no_ret(input, "<>>\n\t");
+    int fd = -1;
+    int fd_bis = -1;
+    size_t l = len_array(parsed);
+    if (l == 1 && redir == 3)
+    {
+        return in_redir_one(parsed, fd, fd_bis, exit);
+    }
+    else
+    {
+        if (!parsed[1])
+        {
+            warnx("wrong use of redir");
+            free_array(parsed);
+            return 1;
+        }
+        for (size_t i = 1; parsed[i]; i++)
+        {
+            strip_space(parsed[i]);
+            switch (redir)
+            {
+            case 1:
+                fd = open(parsed[i], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+                fd_bis = 1;
+                break;
+            case 2:
+                fd = open(parsed[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+                fd_bis = 1;
+                break;
+            case 3:
+                fd = open(parsed[i], O_RDONLY);
+                fd_bis = 0;
+                break;
+            }
+        }
 
-/*         if (pipe(fd) != 0) */
-/*         { */
-/*             warn("pipe failed"); */
-/*             return -1; */
-/*         } */
+        flush();
 
-/*         flush(); */
+        if (fd == -1)
+        {
+            warn("Redirection not handled");
+            free_array(parsed);
+            return 1;
+        }
 
-/*         pid = fork(); */
+        int old = dup(fd_bis);
+        dup2(fd, fd_bis);
 
-/*         if (pid) */
-/*         { */
-/*             close(fd[0]); */
-/*             int old = dup(STDOUT_FILENO); */
-/*             close(STDOUT_FILENO); */
-/*             dup2(fd[1], STDOUT_FILENO); */
-/*             close(fd[1]); */
-/*             ret = exec(left); */
-/*             flush(); */
-/*         } */
-/*     } */
-/*     return ret; */
-/* } */
+        char** cmd = parse_no_ret(parsed[0], " \n\t");
+        exit = exec(cmd);
+        free_array(cmd);
+        close(fd);
+        if (old != -1)
+        {
+            dup2(old, fd_bis);
+            close(old);
+        }
+
+        free_array(parsed);
+        return exit;
+    }
+}
+
+static int loop_pipe(char ***cmd)
+{
+  int   p[2];
+  pid_t pid;
+  int   fd_in = 0;
+  int ret = 0;
+
+  while (*cmd != NULL)
+  {
+      pipe(p);
+      if ((pid = fork()) == -1)
+      {
+          exit(EXIT_FAILURE);
+      }
+      else if (pid == 0)
+      {
+          dup2(fd_in, 0); //change the input according to the old one
+          if (*(cmd + 1) != NULL)
+              dup2(p[1], 1);
+          close(p[0]);
+          execvp((*cmd)[0], *cmd);
+          exit(EXIT_FAILURE);
+      }
+      else
+      {
+          ret = my_wait(pid);
+          close(p[1]);
+          fd_in = p[0]; //save the input for the next command
+          cmd++;
+      }
+  }
+  return ret;
+}
+
+static void free_triple_array(char*** array)
+{
+    for (size_t i = 0; array[i]; i++)
+    {
+        for (size_t j = 0; array[i][j]; j++)
+        {
+            free(array[i][j]);
+            array[i][j] = NULL;
+        }
+        free(array[i]);
+        array[i] = NULL;
+    }
+    free(array);
+    array = NULL;
+}
+
+int exec_pipe(char* input)
+{
+    int ret = 0;
+    char** cmd = parse_no_ret(input, "|");
+    char*** tab = NULL;
+    size_t i = 0;
+    for (; cmd[i]; i++)
+    {
+        tab = realloc(tab, (i+ 1) * sizeof(char **));
+        char** tmp = parse_no_ret(cmd[i], " \n\t");
+        tab[i] = tmp;
+    }
+    tab = realloc(tab, (i + 1)* sizeof(char **));
+    tab[i] = NULL;
+    ret = loop_pipe(tab);
+    free_array(cmd);
+    free_triple_array(tab);
+    return ret;
+}

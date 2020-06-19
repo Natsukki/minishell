@@ -56,6 +56,13 @@ int shell_loop(FILE *file)
                 ret_code = ret;
                 continue;
             }
+            int pipes = is_pipe(parsed[i]);
+            if (pipes)
+            {
+                ret = exec_pipe(parsed[i]);
+                ret_code = ret;
+                continue;
+            }
             char** cmd = parse(parsed[i], " \n\t", ret_code);
             if(is_builtin(cmd[0]) == false)
             {

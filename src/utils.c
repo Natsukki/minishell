@@ -118,3 +118,13 @@ int is_echo(char** cmd)
         return 1;
     return 0;
 }
+
+int is_pipe(char* input)
+{
+    for (size_t i = 0; input[i]; i++)
+    {
+        if (input[i] == '|')
+            return 1;
+    }
+    return 0;
+}

@@ -18,3 +18,4 @@ int is_redir(char* input);
 int is_numerical(char* input);
 void strip_space(char* line);
 int is_echo(char** cmd);
+int is_pipe(char* input);
