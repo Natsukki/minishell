@@ -1,4 +1,0 @@
-to run : [make; ./minishell]
-to test: [./check.sh]
-
-Enjoy!
