@@ -62,8 +62,9 @@ rootme:x:812:800:rootme lse:/home/rootme/:/bin/tcsh
 minishell$ < users_list wc -l
 9364
 ```
-- Handles pipes: `|`
-```minishell$ cat /etc/passwd | head -1
+- Handles pipes: `|`:
+```
+minishell$ cat /etc/passwd | head -1
 root:x:0:0:root:/root:/bin/zsh
 ```
 - Handles return codes:
@@ -72,7 +73,6 @@ minishell$ true
 minishell$ /bin/echo $?
 0
 ```
-to the error output
 - Only uses standard C library functions
 
 ### Testing
@@ -80,7 +80,7 @@ to the error output
 - run the `./check.sh` script (default testsuite options)
 - Alternatively run the `testsuite.py` script:
 ```
-Usage :  ./testsuite.py [-s] [-l] [-c] [-t] filename.wav
+Usage :  ./testsuite.py [-s] [-l] [-c] [-t] minishell
 
 optional arguments:
   -s, --sanity     runs the tests with valgrind activated to check for leaks
