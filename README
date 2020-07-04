@@ -73,7 +73,6 @@ minishell$ true
 minishell$ /bin/echo $?
 0
 ```
-to the error output
 - Only uses standard C library functions
 
 ### Testing
