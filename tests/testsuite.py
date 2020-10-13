@@ -34,7 +34,7 @@ def test(binary, stdin, sanity, category, list, time):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="42 Testsuite")
+    parser = ArgumentParser(description="Minishell Testsuite")
     parser.add_argument('bin', metavar='BIN')
     parser.add_argument('-s', '--sanity', action='store_true')
     parser.add_argument('-l', '--list', action='store_true')
